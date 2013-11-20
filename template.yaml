@@ -18,15 +18,32 @@ parameters:
     type: string
     default: fedora-19-i386-heat-cfntools
     description: ID/name of the image to use for the server
-
+  volume_size:
+    type: Number
+    description: Size of the volume to be created.
+    default: 1
+    constraints:
+      - range: { min: 1, max: 10 }
+        description: must be between 1 and 1024 Gb.
 resources:
   my_server:
     type: OS::Nova::Server
     properties:
+      availability_zone: nova
       key_name: {get_param: key_name}
       image: {get_param: image}
       flavor: {get_param: flavor}
-
+  cinder_volume:
+    type: OS::Cinder::Volume
+    properties:
+      size: { get_param: volume_size }
+      availability_zone: nova
+  volume_attachment:
+    type: OS::Cinder::VolumeAttachment
+    properties:
+      volume_id: { get_resource: cinder_volume }
+      instance_uuid: { get_resource: my_server }
+      mountpoint: /dev/vdc
 outputs:
   server_ssh:
     description: Ssh access to server
