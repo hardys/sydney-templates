@@ -1,0 +1,13 @@
+heat_template_version: 2013-05-23
+
+resources:
+  my_server_plus:
+    type: Angus::Server
+    properties:
+      key_name: dropbear-angus
+      volume_size: 1
+
+outputs:
+  server_ssh_ip:
+    description: Ssh access to server
+    value: {get_attr: [my_server_plus, server_ssh]}
