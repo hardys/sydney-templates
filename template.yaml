@@ -10,3 +10,8 @@ resources:
       key_name: dropbear-angus
       image: fedora-19-i386-heat-cfntools
       flavor: m1.tiny
+
+outputs:
+  server_ssh:
+    description: Ssh access to server
+    value: {'Fn::Select': ['addr', {'Fn::Select': [1, {'Fn::Select': ['default', {get_attr: [my_server, addresses]}]}]}]}
